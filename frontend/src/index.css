@@ -1,0 +1,616 @@
+/* ═══════════════════════════════════════════════════════════════
+   DineWave — Premium UI Design System
+   Inspired by Swiggy / Zomato
+   Font: Poppins + Inter | Theme: Red & White
+═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ─── Design Tokens ─── */
+:root {
+  /* Brand Colors */
+  --primary: #E63946;
+  --primary-dark: #c1121f;
+  --primary-light: #ff6b6b;
+  --primary-gradient: linear-gradient(135deg, #E63946 0%, #c1121f 100%);
+  --primary-glow: rgba(230, 57, 70, 0.25);
+
+  /* Backgrounds */
+  --bg: #FFFFFF;
+  --bg-secondary: #FDF2F2;
+  --bg-subtle: #FFF8F8;
+  --bg-dark: #13040A;
+
+  /* Text */
+  --text-dark: #1C1C1E;
+  --text-body: #3C3C44;
+  --text-muted: #8E8E93;
+
+  /* Cards & Borders */
+  --card-bg: #FFFFFF;
+  --card-border: rgba(230, 57, 70, 0.10);
+  --border-subtle: #F2F2F7;
+
+  /* Shadows — tiered */
+  --shadow-xs: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.07);
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.09);
+  --shadow-md: 0 16px 48px rgba(0, 0, 0, 0.12);
+  --shadow-primary: 0 8px 24px rgba(230, 57, 70, 0.28);
+  --shadow-hover: 0 20px 48px rgba(230, 57, 70, 0.22);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 50px;
+
+  /* Transitions */
+  --transition-fast: 0.18s ease;
+  --transition-base: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ─── Base ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-dark);
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-dark);
+  letter-spacing: -0.2px;
+}
+
+p {
+  color: var(--text-body);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary-light), var(--primary));
+  border-radius: 10px;
+}
+
+/* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
+
+.btn-primary-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--primary-gradient);
+  color: #fff !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.2px;
+  border: none;
+  padding: 11px 30px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 15px var(--primary-glow);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.btn-primary-custom::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0);
+  transition: background var(--transition-fast);
+}
+
+.btn-primary-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--primary-glow);
+  color: #fff !important;
+}
+
+.btn-primary-custom:hover::after {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-primary-custom:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px var(--primary-glow);
+}
+
+.btn-outline-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--primary);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  border: 2px solid var(--primary);
+  padding: 9px 26px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+}
+
+.btn-outline-custom:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--primary-glow);
+}
+
+/* ═══════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════ */
+
+.dw-navbar {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-bottom: 1px solid rgba(230, 57, 70, 0.08);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  transition: box-shadow var(--transition-base);
+}
+
+.dw-navbar .nav-link {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-body) !important;
+  border-radius: var(--radius-sm);
+  padding: 6px 12px !important;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.dw-navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform var(--transition-base);
+}
+
+.dw-navbar .nav-link:hover::after,
+.dw-navbar .nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.dw-navbar .nav-link:hover {
+  color: var(--primary) !important;
+  background: rgba(230, 57, 70, 0.05);
+}
+
+/* ═══════════════════════════════════════
+   CARDS
+═══════════════════════════════════════ */
+
+.dw-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--transition-spring),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+  position: relative;
+}
+
+.dw-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.03) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dw-card:hover {
+  transform: translateY(-10px) scale(1.015);
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(230, 57, 70, 0.25);
+}
+
+.dw-card:hover::before {
+  opacity: 1;
+}
+
+.dw-card img {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dw-card:hover img {
+  transform: scale(1.08);
+}
+
+/* ═══════════════════════════════════════
+   SECTION HEADINGS
+═══════════════════════════════════════ */
+
+.section-label {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.12), rgba(230, 57, 70, 0.06));
+  color: var(--primary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(230, 57, 70, 0.18);
+}
+
+.section-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+/* ═══════════════════════════════════════
+   LOCATION BADGE
+═══════════════════════════════════════ */
+
+.location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.12), rgba(230, 57, 70, 0.06));
+  color: var(--primary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(230, 57, 70, 0.15);
+  letter-spacing: 0.2px;
+}
+
+/* ═══════════════════════════════════════
+   CATEGORY PILLS
+═══════════════════════════════════════ */
+
+.cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F7F7F8;
+  border: 1.5px solid transparent;
+  color: var(--text-muted);
+  font-family: 'Poppins', sans-serif;
+  border-radius: var(--radius-pill);
+  padding: 7px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  letter-spacing: 0.1px;
+}
+
+.cat-pill:hover {
+  background: rgba(230, 57, 70, 0.08);
+  color: var(--primary);
+  border-color: rgba(230, 57, 70, 0.2);
+  transform: translateY(-1px);
+}
+
+.cat-pill.active {
+  background: var(--primary-gradient);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px var(--primary-glow);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════
+   PRICE TAG
+═══════════════════════════════════════ */
+
+.price-tag {
+  font-family: 'Poppins', sans-serif;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.3px;
+}
+
+/* ═══════════════════════════════════════
+   FORMS
+═══════════════════════════════════════ */
+
+.form-control-dw {
+  width: 100%;
+  background: #FAFAFA;
+  border: 1.5px solid var(--border-subtle);
+  color: var(--text-dark);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+.form-control-dw::placeholder {
+  color: var(--text-muted);
+}
+
+.form-control-dw:focus {
+  background: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.1);
+  color: var(--text-dark);
+}
+
+/* ═══════════════════════════════════════
+   HERO OVERLAY
+═══════════════════════════════════════ */
+
+.hero-overlay {
+  background: linear-gradient(120deg,
+      rgba(13, 2, 6, 0.88) 0%,
+      rgba(193, 18, 31, 0.45) 60%,
+      rgba(230, 57, 70, 0.2) 100%);
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+
+.dw-footer {
+  background: var(--bg-dark);
+  color: rgba(255, 255, 255, 0.65);
+  border-top: 3px solid var(--primary);
+  font-family: 'Poppins', sans-serif;
+}
+
+.dw-footer a {
+  color: rgba(255, 255, 255, 0.65);
+  transition: color var(--transition-fast);
+}
+
+.dw-footer a:hover {
+  color: var(--primary-light);
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.scale-in {
+  animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ═══════════════════════════════════════
+   LOADING SKELETON
+═══════════════════════════════════════ */
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #fafafa 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ═══════════════════════════════════════
+   BADGE OVERRIDES (Bootstrap)
+═══════════════════════════════════════ */
+
+.badge {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ═══════════════════════════════════════
+   FORM LABEL WEIGHT
+═══════════════════════════════════════ */
+
+.fw-600 {
+  font-weight: 600;
+}
+
+label.form-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+
+/* ═══════════════════════════════════════
+   CARD PANELS (white panels in pages)
+═══════════════════════════════════════ */
+
+.bg-white.rounded-4 {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* ═══════════════════════════════════════
+   BOOTSTRAP OVERRIDES
+═══════════════════════════════════════ */
+
+.rounded-4 {
+  border-radius: var(--radius-lg) !important;
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.shadow-lg {
+  box-shadow: var(--shadow-md) !important;
+}
+
+hr {
+  border-color: var(--border-subtle);
+  opacity: 1;
+}
+
+/* Input group focus ring */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+/* ═══════════════════════════════════════
+   SPINNER (override Bootstrap color)
+═══════════════════════════════════════ */
+
+.spinner-border {
+  color: var(--primary) !important;
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE TWEAKS
+═══════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .dw-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  .btn-primary-custom,
+  .btn-outline-custom {
+    padding: 10px 22px;
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    font-size: 14px;
+  }
+
+  .section-title {
+    font-size: 1.45rem;
+  }
+}
