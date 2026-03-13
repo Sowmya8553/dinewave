@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -19,7 +19,7 @@ const AdminLogin = () => {
         setError(null);
         setLoading(true);
         try {
-            const res = await axios.post('`http://localhost:5000/api/admin/login', { username, password });
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/admin/login`, { username, password });
             localStorage.setItem('adminToken', res.data.token);
             navigate('/admin/dashboard');
         } catch (err) {
@@ -96,7 +96,7 @@ const AdminLogin = () => {
                         disabled={loading}
                         style={{ width: '100%', background: '#C8102E', color: '#fff', border: 'none', borderRadius: '10px', padding: '13px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.7 : 1 }}
                     >
-                        {loading ? 'Signing in...' : 'Sign In →'}
+                        {loading ? 'Signing in...' : 'Sign In â†’'}
                     </button>
                 </form>
                 <p style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.82rem', marginTop: '20px' }}>
@@ -108,3 +108,4 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
+

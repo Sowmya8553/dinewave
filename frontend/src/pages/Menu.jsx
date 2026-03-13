@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -18,7 +18,7 @@ const Menu = () => {
     useEffect(() => {
         const fetchMenu = async () => {
             try {
-                const res = await axios.get('`http://localhost:5000/api/menu');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/menu`);
                 setItems(res.data);
             } catch (err) {
                 console.error('Failed to fetch menu items', err);

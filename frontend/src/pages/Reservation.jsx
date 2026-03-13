@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
@@ -13,7 +13,7 @@ const Reservation = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        axios.get('`http://localhost:5000/api/restaurants')
+        axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants`)
             .then(res => setRestaurants(res.data))
             .catch(() => { });
     }, []);
@@ -33,7 +33,7 @@ const Reservation = () => {
         setLoading(true);
         setStatus(null);
         try {
-            await axios.post('`http://localhost:5000/api/reservations', formData);
+            await axios.post(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/reservations`, formData);
             setStatus('success');
             setFormData({ name: '', phoneNumber: '', email: '', date: '', time: '', guests: 2, restaurantId: '', restaurantName: '' });
         } catch (err) {
@@ -63,13 +63,13 @@ const Reservation = () => {
                                 {status === 'success' && (
                                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0 }}
                                         className="alert border-0 rounded-3 mb-4" style={{ background: '#d4edda', color: '#155724' }}>
-                                        ✅ Your reservation has been submitted! We will confirm via email.
+                                        âœ… Your reservation has been submitted! We will confirm via email.
                                     </motion.div>
                                 )}
                                 {status === 'error' && (
                                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0 }}
                                         className="alert border-0 rounded-3 mb-4" style={{ background: '#f8d7da', color: '#721c24' }}>
-                                        ❌ Something went wrong. Please try again.
+                                        âŒ Something went wrong. Please try again.
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -93,7 +93,7 @@ const Reservation = () => {
                                         <select name="restaurantId" className="form-control form-control-dw" value={formData.restaurantId} onChange={handleChange} required>
                                             <option value="">-- Choose a Restaurant --</option>
                                             {restaurants.map(r => (
-                                                <option key={r._id} value={r._id}>{r.name} — {r.location}</option>
+                                                <option key={r._id} value={r._id}>{r.name} â€” {r.location}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -111,7 +111,7 @@ const Reservation = () => {
                                     </div>
                                 </div>
                                 <button type="submit" className="btn btn-primary-custom w-100 mt-4 py-3" disabled={loading}>
-                                    {loading ? 'Submitting...' : 'Confirm Reservation →'}
+                                    {loading ? 'Submitting...' : 'Confirm Reservation â†’'}
                                 </button>
                             </form>
                         </motion.div>
@@ -123,3 +123,4 @@ const Reservation = () => {
 };
 
 export default Reservation;
+

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+﻿import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const CartContext = createContext(null);
 
@@ -6,7 +6,7 @@ export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
     const [cartRestaurant, setCartRestaurant] = useState(null); // { id, name }
 
-    // Add item — enforces single-restaurant rule
+    // Add item â€” enforces single-restaurant rule
     const addToCart = useCallback((item, restaurant) => {
         // If cart has items from a different restaurant, ask to clear
         if (cartRestaurant && cartRestaurant.id !== restaurant.id) {
@@ -68,3 +68,4 @@ export const useCart = () => {
     if (!ctx) throw new Error('useCart must be used within CartProvider');
     return ctx;
 };
+

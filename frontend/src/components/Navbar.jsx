@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
@@ -48,8 +48,8 @@ const Navbar = () => {
             setSearching(true);
             try {
                 const [rRes, mRes] = await Promise.all([
-                    axios.get('`http://localhost:5000/api/restaurants'),
-                    axios.get('`http://localhost:5000/api/menu')
+                    axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants`),
+                    axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/menu`)
                 ]);
                 const q = query.toLowerCase();
 

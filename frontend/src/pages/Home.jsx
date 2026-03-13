@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -6,7 +6,6 @@ import RestaurantCard from '../components/RestaurantCard';
 
 const CITIES = ['Chennai', 'Bangalore', 'Hyderabad', 'Coimbatore'];
 
-// Map approximate city center coords to city names for geolocation
 const getCityFromCoords = (lat, lon) => {
     const cities = [
         { name: 'Chennai', lat: 13.07, lon: 80.27 },
@@ -22,13 +21,19 @@ const getCityFromCoords = (lat, lon) => {
     return closest;
 };
 
+const FEATURES = [
+    { icon: '🚀', title: 'Fast Delivery', desc: '30-45 min guaranteed' },
+    { icon: '🍽️', title: '50+ Restaurants', desc: 'Across 4 cities' },
+    { icon: '💵', title: 'Cash on Delivery', desc: 'Pay when it arrives' },
+    { icon: '⭐', title: 'Top Rated', desc: 'Only the best venues' },
+];
+
 const Home = () => {
     const [selectedCity, setSelectedCity] = useState(null);
     const [restaurants, setRestaurants] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [geoStatus, setGeoStatus] = useState('idle'); // idle | detecting | detected | denied
+    const [geoStatus, setGeoStatus] = useState('idle');
 
-    // Auto-detect location on mount
     useEffect(() => {
         if (navigator.geolocation) {
             setGeoStatus('detecting');
@@ -38,9 +43,7 @@ const Home = () => {
                     setGeoStatus('detected');
                     setSelectedCity(city);
                 },
-                () => {
-                    setGeoStatus('denied');
-                },
+                () => setGeoStatus('denied'),
                 { timeout: 8000 }
             );
         } else {
@@ -55,7 +58,7 @@ const Home = () => {
     const fetchRestaurants = async (city) => {
         setLoading(true);
         try {
-            const res = await axios.get(`http://localhost:5000/api/restaurants?location=${city}`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants?location=${city}`);
             setRestaurants(res.data);
         } catch (err) {
             console.error('Failed to fetch restaurants', err);
@@ -89,24 +92,70 @@ const Home = () => {
                         <span style={{ background: 'var(--primary)', color: '#fff', padding: '6px 20px', borderRadius: '10px', fontSize: '2.8rem', fontWeight: 900, display: 'inline-block', marginRight: 8 }}>Dine</span>
                         <span style={{ fontSize: '2.8rem', fontWeight: 900 }}>Wave</span>
                     </motion.div>
-                    <h2 className="fw-light mb-4" style={{ fontSize: '1.4rem', color: 'rgba(255,255,255,0.85)' }}>
-                        Discover & Reserve the finest restaurants near you
-                    </h2>
-                    <div className="d-flex gap-3 justify-content-center flex-wrap">
-                        <Link to="/reservation" className="btn btn-primary-custom btn-lg px-5">Book a Table</Link>
-                        <Link to="/menu" className="btn btn-light btn-lg px-5 rounded-pill">Explore Menu</Link>
-                    </div>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                        className="fw-light mb-2" style={{ fontSize: 'clamp(1.2rem,3vw,1.6rem)', color: 'rgba(255,255,255,0.9)' }}
+                    >
+                        Discover &amp; Order from the Finest Restaurants Near You
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+                        style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1rem', marginBottom: 32 }}
+                    >
+                        🚀 Fast Delivery &nbsp;·&nbsp; 💵 Cash on Delivery &nbsp;·&nbsp; ⭐ Top Rated
+                    </motion.p>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
+                        className="d-flex gap-3 justify-content-center flex-wrap"
+                    >
+                        <Link to="/menu" className="btn-primary-custom" style={{ padding: '14px 40px', fontSize: '1rem' }}>Explore Menu 🍽️</Link>
+                        <Link to="/reservation" style={{ padding: '14px 40px', fontSize: '1rem', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', color: '#fff', borderRadius: 50, fontWeight: 600, border: '2px solid rgba(255,255,255,0.35)', textDecoration: 'none', transition: 'all 0.25s' }}
+                            onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.25)'}
+                            onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
+                        >
+                            Book a Table 📅
+                        </Link>
+                    </motion.div>
+                </motion.div>
+
+                {/* Scroll indicator */}
+                <motion.div
+                    animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}
+                    style={{ position: 'absolute', bottom: 36, left: '50%', transform: 'translateX(-50%)', color: 'rgba(255,255,255,0.5)', fontSize: '1.5rem', zIndex: 2 }}
+                >
+                    ↓
                 </motion.div>
             </div>
 
-            {/* ── Location Section ── */}
+            {/* ── Feature Strip ── */}
+            <div className="feature-strip">
+                <div className="container">
+                    <div className="row g-0">
+                        {FEATURES.map((f, i) => (
+                            <div className="col-6 col-md-3" key={f.title}>
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="feature-item"
+                                    style={{ borderRight: i < 3 ? '1px solid var(--border-subtle)' : 'none' }}
+                                >
+                                    <div className="feature-icon">{f.icon}</div>
+                                    <div className="feature-title">{f.title}</div>
+                                    <div className="feature-desc">{f.desc}</div>
+                                </motion.div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Restaurant Discovery ── */}
             <div style={{ background: 'var(--bg-secondary)' }} className="py-5">
                 <div className="container">
                     <div className="text-center mb-4">
                         <span className="section-label">📍 Location</span>
                         <h2 className="section-title mt-2">Find Restaurants Near You</h2>
 
-                        {/* Geolocation status */}
                         {geoStatus === 'detecting' && (
                             <p className="text-muted mt-2">
                                 <span className="spinner-border spinner-border-sm me-2" style={{ color: 'var(--primary)' }} />
@@ -131,13 +180,15 @@ const Home = () => {
                             <motion.button
                                 key={city}
                                 whileTap={{ scale: 0.95 }}
+                                whileHover={{ y: -3 }}
                                 onClick={() => setSelectedCity(city)}
-                                className="d-flex flex-column align-items-center p-4 border rounded-4"
+                                className="d-flex flex-column align-items-center p-4 rounded-4"
                                 style={{
                                     minWidth: '140px', cursor: 'pointer',
                                     background: selectedCity === city ? 'var(--primary)' : '#fff',
                                     color: selectedCity === city ? '#fff' : 'var(--text-dark)',
                                     border: selectedCity === city ? '2px solid var(--primary)' : '2px solid #e5e7eb',
+                                    boxShadow: selectedCity === city ? 'var(--shadow-primary)' : 'var(--shadow-xs)',
                                     transition: 'all 0.25s', fontWeight: 700, fontSize: '1rem'
                                 }}
                             >
@@ -150,7 +201,7 @@ const Home = () => {
                     </div>
 
                     {/* Results */}
-                    <AnimatePresence>
+                    <AnimatePresence mode="wait">
                         {selectedCity && (
                             <motion.div key={selectedCity} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                                 <h4 className="fw-bold mb-4 text-center">
@@ -158,7 +209,7 @@ const Home = () => {
                                 </h4>
                                 {loading ? (
                                     <div className="text-center py-5">
-                                        <div className="spinner-border" style={{ color: 'var(--primary)' }} role="status" />
+                                        <div className="spinner-border" style={{ color: 'var(--primary)', width: '3rem', height: '3rem' }} role="status" />
                                     </div>
                                 ) : restaurants.length > 0 ? (
                                     <div className="row g-4">
@@ -170,7 +221,8 @@ const Home = () => {
                                     </div>
                                 ) : (
                                     <div className="text-center py-5">
-                                        <p className="text-muted">No restaurants found in {selectedCity} yet.</p>
+                                        <div style={{ fontSize: '3rem', marginBottom: 12 }}>🍽️</div>
+                                        <p className="text-muted fs-5">No restaurants found in {selectedCity} yet.</p>
                                     </div>
                                 )}
                             </motion.div>

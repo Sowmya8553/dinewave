@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 
 const ModernCard = ({ item }) => {
@@ -42,3 +42,4 @@ const ModernCard = ({ item }) => {
 };
 
 export default ModernCard;
+

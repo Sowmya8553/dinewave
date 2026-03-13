@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -8,7 +8,7 @@ const Checkout = () => {
     const navigate = useNavigate();
     const { cartItems, cartRestaurant, totalAmount, clearCart } = useCart();
     const [form, setForm] = useState({ customerName: '', phone: '', deliveryAddress: '' });
-    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const paymentMethod = 'COD';
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -30,43 +30,13 @@ const Checkout = () => {
             restaurantName: cartRestaurant.name,
             items: cartItems.map(i => ({ menuItemId: i._id, name: i.name, price: i.price, quantity: i.quantity, imageUrl: i.imageUrl })),
             totalAmount,
-            paymentMethod,
-            paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Pending',
+            paymentMethod: 'COD',
+            paymentStatus: 'Pending',
         };
         try {
-            if (paymentMethod === 'COD') {
-                await axios.post('`http://localhost:5000/api/orders', orderPayload);
-                clearCart();
-                navigate('/order-success', { state: { method: 'COD', total: totalAmount, customerName: form.customerName } });
-            } else {
-                // Razorpay
-                const rpRes = await axios.post('`http://localhost:5000/api/orders/razorpay', { amount: totalAmount });
-                const { orderId, amount: rpAmount, currency } = rpRes.data;
-
-                const options = {
-                    key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_YOUR_KEY_ID',
-                    amount: rpAmount,
-                    currency,
-                    name: 'DineWave',
-                    description: `Order from ${cartRestaurant.name}`,
-                    order_id: orderId,
-                    handler: async (response) => {
-                        const finalOrder = {
-                            ...orderPayload,
-                            paymentStatus: 'Paid',
-                            razorpayOrderId: orderId,
-                            razorpayPaymentId: response.razorpay_payment_id,
-                        };
-                        await axios.post('`http://localhost:5000/api/orders', finalOrder);
-                        clearCart();
-                        navigate('/order-success', { state: { method: 'Online', total: totalAmount, customerName: form.customerName } });
-                    },
-                    prefill: { name: form.customerName, contact: form.phone },
-                    theme: { color: '#C8102E' }
-                };
-                const rzp = new window.Razorpay(options);
-                rzp.open();
-            }
+            await axios.post(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/orders`, orderPayload);
+            clearCart();
+            navigate('/order-success', { state: { method: 'COD', total: totalAmount, customerName: form.customerName } });
         } catch (err) {
             setError('Failed to place order. Please try again.');
         } finally {
@@ -76,113 +46,199 @@ const Checkout = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Load Razorpay script if online payment (PhonePe, Paytm, or Online)
-        if (paymentMethod !== 'COD' && !window.Razorpay) {
-            const script = document.createElement('script');
-            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-            script.onload = () => placeOrder();
-            document.body.appendChild(script);
-        } else {
-            placeOrder();
-        }
+        placeOrder();
     };
 
+    const deliveryFee = 0;
+    const taxes = Math.round(totalAmount * 0.05);
+    const grandTotal = totalAmount + deliveryFee + taxes;
+
     return (
-        <div style={{ marginTop: '70px', minHeight: '80vh', background: 'var(--bg-secondary)' }} className="py-5">
+        <div className="checkout-page">
             <div className="container">
-                <div className="text-center mb-5">
-                    <span className="section-label">Checkout</span>
-                    <h2 className="section-title mt-2">Complete Your Order</h2>
-                </div>
+                {/* Page Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="checkout-header"
+                >
+                    <div className="checkout-breadcrumb">
+                        <span>🛒 Cart</span>
+                        <span className="breadcrumb-sep">›</span>
+                        <span className="breadcrumb-active">Checkout</span>
+                        <span className="breadcrumb-sep">›</span>
+                        <span>Confirmation</span>
+                    </div>
+                    <h1 className="checkout-title">Complete Your Order</h1>
+                    <p className="checkout-subtitle">You're just one step away from delicious food!</p>
+                </motion.div>
 
-                <div className="row g-4">
-                    {/* Form */}
-                    <div className="col-lg-7">
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-4 p-5 shadow-sm">
-                            <h5 className="fw-bold mb-4">Delivery Details</h5>
+                <div className="checkout-grid">
+                    {/* Left: Form */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="checkout-form-col"
+                    >
+                        {/* Error */}
+                        <AnimatePresence>
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0 }}
+                                    className="checkout-error"
+                                >
+                                    ⚠️ {error}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
-                            <AnimatePresence>
-                                {error && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                    className="alert mb-4" style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '10px' }}>{error}</motion.div>)}
-                            </AnimatePresence>
-
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label className="form-label fw-600">Full Name *</label>
-                                    <input name="customerName" className="form-control form-control-dw" value={form.customerName} onChange={handleChange} required />
+                        {/* Delivery Details */}
+                        <div className="checkout-card">
+                            <div className="checkout-card-header">
+                                <div className="checkout-step-badge">1</div>
+                                <h2 className="checkout-section-title">Delivery Details</h2>
+                            </div>
+                            <form onSubmit={handleSubmit} id="checkout-form">
+                                <div className="form-field">
+                                    <label className="field-label">Full Name *</label>
+                                    <input
+                                        name="customerName"
+                                        className="field-input"
+                                        placeholder="Enter your full name"
+                                        value={form.customerName}
+                                        onChange={handleChange}
+                                        required
+                                    />
                                 </div>
-                                <div className="mb-3">
-                                    <label className="form-label fw-600">Phone Number *</label>
-                                    <input name="phone" type="tel" className="form-control form-control-dw" value={form.phone} onChange={handleChange} required />
+                                <div className="form-field">
+                                    <label className="field-label">Phone Number *</label>
+                                    <input
+                                        name="phone"
+                                        type="tel"
+                                        className="field-input"
+                                        placeholder="+91 98765 43210"
+                                        value={form.phone}
+                                        onChange={handleChange}
+                                        required
+                                    />
                                 </div>
-                                <div className="mb-4">
-                                    <label className="form-label fw-600">Delivery Address *</label>
-                                    <textarea name="deliveryAddress" rows={3} className="form-control form-control-dw" value={form.deliveryAddress} onChange={handleChange} required />
+                                <div className="form-field">
+                                    <label className="field-label">Delivery Address *</label>
+                                    <textarea
+                                        name="deliveryAddress"
+                                        rows={3}
+                                        className="field-input"
+                                        placeholder="House No, Street, Area, City, Pincode"
+                                        value={form.deliveryAddress}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </form>
+                        </div>
+
+                        {/* Payment Method - COD Only */}
+                        <div className="checkout-card">
+                            <div className="checkout-card-header">
+                                <div className="checkout-step-badge">2</div>
+                                <h2 className="checkout-section-title">Payment Method</h2>
+                            </div>
+                            <div className="payment-cod-box">
+                                <div className="payment-cod-icon">💵</div>
+                                <div className="payment-cod-info">
+                                    <div className="payment-cod-title">Cash on Delivery</div>
+                                    <div className="payment-cod-desc">Pay with cash when your order arrives at your doorstep</div>
+                                </div>
+                                <div className="payment-cod-check">✔️</div>
+                            </div>
+                            <div className="cod-note">
+                                🔒 Secure &amp; safe. Keep ₹{grandTotal.toFixed(0)} ready at the time of delivery.
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Right: Order Summary */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.1 }}
+                        className="checkout-summary-col"
+                    >
+                        <div className="summary-sticky">
+                            <div className="checkout-card">
+                                <div className="checkout-card-header">
+                                    <h2 className="checkout-section-title">Order Summary</h2>
                                 </div>
 
-                                <h5 className="fw-bold mb-3">Payment Method</h5>
-                                <div className="row g-2 mb-4">
-                                    {[
-                                        ['COD', '💵 COD'],
-                                        ['PhonePe', '📱 PhonePe'],
-                                        ['Paytm', '💰 Paytm'],
-                                        ['Online', '💳 Cards/NetBanking']
-                                    ].map(([val, label]) => (
-                                        <div className="col-6" key={val}>
-                                            <button type="button" onClick={() => setPaymentMethod(val)}
-                                                style={{
-                                                    width: '100%', padding: '12px', borderRadius: '12px', cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem',
-                                                    border: paymentMethod === val ? '2px solid var(--primary)' : '2px solid #e5e7eb',
-                                                    background: paymentMethod === val ? 'rgba(200,16,46,0.07)' : '#fff',
-                                                    color: paymentMethod === val ? 'var(--primary)' : 'var(--text-dark)',
-                                                    transition: 'all 0.2s'
-                                                }}>
-                                                {label}
-                                            </button>
+                                <div className="summary-restaurant-tag">
+                                    🏪 {cartRestaurant?.name}
+                                </div>
+
+                                <div className="summary-items">
+                                    {cartItems.map(item => (
+                                        <div key={item._id} className="summary-item">
+                                            <div className="summary-item-img-wrap">
+                                                <img src={item.imageUrl} alt={item.name} className="summary-item-img" />
+                                            </div>
+                                            <div className="summary-item-info">
+                                                <div className="summary-item-name">{item.name}</div>
+                                                <div className="summary-item-qty">Qty: {item.quantity}</div>
+                                            </div>
+                                            <div className="summary-item-price">₹{(item.price * item.quantity).toFixed(0)}</div>
                                         </div>
                                     ))}
                                 </div>
 
-                                {paymentMethod === 'Online' && (
-                                    <p className="text-muted small mb-4" style={{ background: '#f0fdf4', padding: '10px', borderRadius: '8px' }}>
-                                        🔒 You will be redirected to Razorpay's secure payment page.
-                                    </p>
-                                )}
-
-                                <button type="submit" className="btn btn-primary-custom w-100 py-3 fw-bold" disabled={loading}>
-                                    {loading ? 'Processing...' : paymentMethod === 'COD' ? '✅ Place Order (COD)' : `💳 Pay with ${paymentMethod} ₹${totalAmount.toFixed(0)}`}
-                                </button>
-                            </form>
-                        </motion.div>
-                    </div>
-
-                    {/* Order Summary */}
-                    <div className="col-lg-5">
-                        <div className="bg-white rounded-4 p-4 shadow-sm sticky-top" style={{ top: '90px' }}>
-                            <h5 className="fw-bold mb-4">Order Summary</h5>
-                            <div className="mb-3 pb-3 border-bottom">
-                                <span className="location-badge">🏪 {cartRestaurant?.name}</span>
-                            </div>
-                            {cartItems.map(item => (
-                                <div key={item._id} className="d-flex align-items-center gap-3 mb-3">
-                                    <img src={item.imageUrl} alt={item.name} style={{ width: '50px', height: '50px', borderRadius: '8px', objectFit: 'cover' }} />
-                                    <div className="flex-grow-1">
-                                        <p className="mb-0 fw-600 small">{item.name}</p>
-                                        <span className="text-muted small">Qty: {item.quantity}</span>
+                                <div className="summary-breakdown">
+                                    <div className="breakdown-row">
+                                        <span>Subtotal</span>
+                                        <span>₹{totalAmount.toFixed(0)}</span>
                                     </div>
-                                    <span className="fw-bold small">₹{(item.price * item.quantity).toFixed(0)}</span>
+                                    <div className="breakdown-row">
+                                        <span>Delivery Fee</span>
+                                        <span className="free-tag">FREE</span>
+                                    </div>
+                                    <div className="breakdown-row">
+                                        <span>GST &amp; Taxes (5%)</span>
+                                        <span>₹{taxes}</span>
+                                    </div>
+                                    <div className="breakdown-total">
+                                        <span>Total Amount</span>
+                                        <span className="total-price">₹{grandTotal.toFixed(0)}</span>
+                                    </div>
                                 </div>
-                            ))}
-                            <hr />
-                            <div className="d-flex justify-content-between align-items-center">
-                                <span className="fw-bold">Total Amount</span>
-                                <span className="price-tag fs-4">₹{totalAmount.toFixed(0)}</span>
+
+                                <div className="summary-payment-method">
+                                    💵 Cash on Delivery
+                                </div>
+
+                                <motion.button
+                                    form="checkout-form"
+                                    type="submit"
+                                    className="place-order-btn"
+                                    disabled={loading}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    {loading ? (
+                                        <span className="btn-loading">
+                                            <span className="spinner-border spinner-border-sm me-2" />
+                                            Processing...
+                                        </span>
+                                    ) : (
+                                        '✅ Place Order (COD)'
+                                    )}
+                                </motion.button>
+
+                                <div className="secure-badge">
+                                    🔒 100% Secure Checkout
+                                </div>
                             </div>
-                            <p className="text-muted small mt-2 mb-0">
-                                {paymentMethod === 'COD' ? '💵 Pay on delivery' : '💳 Secure online payment via Razorpay'}
-                            </p>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
@@ -13,7 +13,7 @@ const Contact = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.post('`http://localhost:5000/api/contact', formData);
+            await axios.post(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/contact`, formData);
             setStatus('success');
             setFormData({ name: '', email: '', subject: '', message: '' });
         } catch {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -20,8 +20,8 @@ const RestaurantDetail = () => {
             setLoading(true);
             try {
                 const [rRes, mRes] = await Promise.all([
-                    axios.get(`http://localhost:5000/api/restaurants/${id}`),
-                    axios.get(`http://localhost:5000/api/menu?restaurantId=${id}`)
+                    axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants/${id}`),
+                    axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/menu?restaurantId=${id}`)
                 ]);
                 setRestaurant(rRes.data);
                 setMenuItems(mRes.data);
@@ -114,7 +114,7 @@ const RestaurantDetail = () => {
                                             onError={(e) => {
                                                 if (!e.target.dataset.fallback) {
                                                     e.target.dataset.fallback = '1';
-                                                    e.target.src = `https://source.unsplash.com/500x350/?${encodeURIComponent(item.name + ' food dish')}`;
+                                                    e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80';
                                                 }
                                             }}
                                         />

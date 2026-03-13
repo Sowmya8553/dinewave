@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+﻿import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 
 import Navbar from './components/Navbar';
@@ -55,3 +55,4 @@ function App() {
 }
 
 export default App;
+
