@@ -58,7 +58,7 @@ const Home = () => {
     const fetchRestaurants = async (city) => {
         setLoading(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants?location=${city}`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants?location=${city}`);
             setRestaurants(res.data);
         } catch (err) {
             console.error('Failed to fetch restaurants', err);

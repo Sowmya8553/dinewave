@@ -6,7 +6,7 @@ const CITIES = ['Chennai', 'Bangalore', 'Hyderabad', 'Coimbatore'];
 const CATEGORIES = ['Starters', 'Main Course', 'Desserts', 'Drinks'];
 
 const api = (token) => axios.create({
-    baseURL: import.meta.env.VITE_API_URL || \'http://localhost:5000\',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
     headers: { Authorization: `Bearer ${token}` }
 });
 
@@ -31,11 +31,11 @@ const Dashboard = () => {
     const fetchAll = async () => {
         try {
             const [rRes, mRes, rvRes, cRes, oRes] = await Promise.all([
-                axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants`),
-                axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/menu`),
+                axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants`),
+                axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/menu`),
                 api(token).get('/api/reservations'),
                 api(token).get('/api/contact'),
-                axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/orders`),
+                axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`),
             ]);
             setRestaurants(rRes.data);
             setMenuItems(mRes.data);
@@ -47,7 +47,7 @@ const Dashboard = () => {
 
     const handleUpdateOrderStatus = async (orderId, newStatus) => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/orders/${orderId}/status`, { orderStatus: newStatus });
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders/${orderId}/status`, { orderStatus: newStatus });
             fetchAll();
         } catch { alert('Failed to update order status'); }
     };

@@ -12,11 +12,36 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// DB Connection
+// DB Connection - cached for serverless
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/dinewave';
-mongoose.connect(MONGODB_URI)
-    .then(() => console.log('MongoDB connected successfully to DineWave DB'))
-    .catch((err) => console.error('MongoDB connection error:', err));
+
+let cachedDb = null;
+
+async function connectToDatabase() {
+    if (cachedDb && mongoose.connection.readyState === 1) {
+        return cachedDb;
+    }
+    const db = await mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 30000,
+        socketTimeoutMS: 45000,
+        connectTimeoutMS: 30000,
+        bufferCommands: true,
+    });
+    cachedDb = db;
+    console.log('MongoDB connected successfully to DineWave DB');
+    return db;
+}
+
+// Middleware to ensure DB connection before handling requests
+app.use(async (req, res, next) => {
+    try {
+        await connectToDatabase();
+        next();
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
+        res.status(500).json({ message: 'Database connection failed', error: err.message });
+    }
+});
 
 // Routes
 app.use('/api/restaurants', require('./routes/restaurants'));
@@ -28,5 +53,9 @@ app.use('/api/orders', require('./routes/orders'));
 
 app.get('/', (req, res) => res.send('DineWave API is running.'));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`DineWave server running on port ${PORT}`));
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`DineWave server running on port ${PORT}`));
+}
+
+module.exports = app;

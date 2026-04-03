@@ -13,7 +13,7 @@ const Reservation = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants`)
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants`)
             .then(res => setRestaurants(res.data))
             .catch(() => { });
     }, []);
@@ -33,7 +33,7 @@ const Reservation = () => {
         setLoading(true);
         setStatus(null);
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/reservations`, formData);
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reservations`, formData);
             setStatus('success');
             setFormData({ name: '', phoneNumber: '', email: '', date: '', time: '', guests: 2, restaurantId: '', restaurantName: '' });
         } catch (err) {

@@ -48,8 +48,8 @@ const Navbar = () => {
             setSearching(true);
             try {
                 const [rRes, mRes] = await Promise.all([
-                    axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants`),
-                    axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/menu`)
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants`),
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/menu`)
                 ]);
                 const q = query.toLowerCase();
 

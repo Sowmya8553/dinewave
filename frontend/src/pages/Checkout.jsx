@@ -34,7 +34,7 @@ const Checkout = () => {
             paymentStatus: 'Pending',
         };
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/orders`, orderPayload);
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`, orderPayload);
             clearCart();
             navigate('/order-success', { state: { method: 'COD', total: totalAmount, customerName: form.customerName } });
         } catch (err) {

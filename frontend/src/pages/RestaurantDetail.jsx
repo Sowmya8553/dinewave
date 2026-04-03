@@ -20,8 +20,8 @@ const RestaurantDetail = () => {
             setLoading(true);
             try {
                 const [rRes, mRes] = await Promise.all([
-                    axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/restaurants/${id}`),
-                    axios.get(`${import.meta.env.VITE_API_URL || \'http://localhost:5000\'}/api/menu?restaurantId=${id}`)
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/restaurants/${id}`),
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/menu?restaurantId=${id}`)
                 ]);
                 setRestaurant(rRes.data);
                 setMenuItems(mRes.data);
