@@ -6,8 +6,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
+
+// Sanitize FRONTEND_URL - trim whitespace/newlines to prevent ERR_INVALID_CHAR in headers
+const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.trim() : '*';
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || '*',
+    origin: frontendUrl,
     credentials: true
 }));
 app.use(express.json());
